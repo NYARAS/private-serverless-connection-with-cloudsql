@@ -30,3 +30,25 @@ Please note that this is not required since you can also reuse your own VPC or t
 gcloud compute networks create private-cloud-sql \
 --subnet-mode custom
 ```
+
+In Google Cloud, a VPC is global, but we still need to create subnets to deploy resources in the different Cloud region.
+
+This command creates an subnet in the VPC we created earlier for europe-west1:
+
+```
+gcloud compute networks subnets create private-europe-west1 \
+--description=europe-west1\ subnet \
+--range=192.168.1.0/24 \
+--network=private-cloud-sql \
+--region=europe-west1
+```
+
+## Step 2: Create a Serverless VPC Access Connector
+After we’ve created a VPC with a subnet, we can continue by creating a Serverless VPC Access Connector. We can use the following GCloud command to do this.
+
+```
+gcloud compute networks vpc-access connectors create connector-europe-west1 \
+  --network=private-cloud-sql \
+  --region=europe-west1 \
+  --range=10.8.0.0/28
+```
