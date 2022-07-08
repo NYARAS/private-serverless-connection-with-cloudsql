@@ -19,7 +19,7 @@ We are using the Serverless VPC Access Connector to create a connection to a Clo
 In this doc, I’ll guide you using step by step procedures in setting this up for Google App Engine Standard Environment.
 
 ## Prerequisites:
-* Authenticated Google Cloud SDK, alternatively Cloud Shell.
+* Authenticated [Google Cloud SDK](https://cloud.google.com/sdk/docs/install), alternatively Cloud Shell.
 * Enough GCP permissions to create networks and perform deployments.
 
 ## Step 1: Create an VPC with networks
@@ -53,7 +53,7 @@ gcloud compute networks vpc-access connectors create connector-europe-west1 \
   --range=10.8.0.0/28
 ```
 
-Note: This command uses some defaults for the number of instances as well as the instance type. Since this could limit your network throughput between your VPC and the Serverless products, it’s recommended to override these properties.
+Note: This command uses some defaults for the number of instances as well as the instance type. Since this could limit your network throughput between your VPC and the Serverless products, it’s recommended to [override these properties](https://cloud.google.com/sdk/gcloud/reference/compute/networks/vpc-access/connectors/create).
 
 ## Step 3: Setup Private Access Connection
 The CloudSQL instances are deployed in a VPC that Google Manages. To use Cloud SQL instances via private IP in your VPC, we need to setup a VPC peering connection with the ‘servicenetworking’ network.
@@ -74,7 +74,7 @@ gcloud compute addresses create google-managed-services-private-cloud-sql \
 --network=private-cloud-sql
 ```
 
-This sets up an auto-generated IP address range based on a prefix, it’s also possible to specify the range yourself.
+This sets up an auto-generated IP address range based on a prefix, it’s also possible to [specify the range yourself](https://cloud.google.com/sdk/gcloud/reference/compute/addresses/create#ADDRESS).
 
 Now that we have an IP range, we can use this to setup a VPC peering connecting with the ‘service networking’ project:
 
@@ -89,7 +89,7 @@ Note: This step is specifically for connecting with Cloud SQL over private IP. I
 ## Step 4: Create a Cloud SQL Instance
 Now that we created the necessary network infrastructure, we are ready to create a CloudSQL Database instance.
 
-Using this command, we create a new PostgreSQL database with private ip, in the VPC network we provisioned earlier. In this example, I’ve used ‘secretpassword’ as the root password. For production workloads, I’d recommend using Google Secret Manager or IAM authentication.
+Using this command, we create a new PostgreSQL database with private ip, in the VPC network we provisioned earlier. In this example, I’ve used ‘secretpassword’ as the root password. For production workloads, I’d recommend using [Google Secret Manager ](https://cloud.google.com/secret-manager) or [IAM authentication](https://cloud.google.com/sql/docs/postgres/authentication).
 
 ```
 gcloud beta sql instances create private-postgres \
@@ -110,8 +110,6 @@ gcloud sql databases create test --instance private-postgres
 
 ## Step 5: Configure your App Engine Application
 Now that we created the correct networking configuration and the (PostgreSQL) Database has been created, it’s time to update the configuration of our App Engine application.
-
-A hello world application can be cloned here.
 
 To update the configuration of an App Engine Application, we need to change the app.yaml file. This file is located in the root of the project.
 
