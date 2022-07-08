@@ -107,3 +107,29 @@ This operation takes a few minutes. After that, a database can be created in the
 ```
 gcloud sql databases create test --instance private-postgres
 ```
+
+## Step 5: Configure your App Engine Application
+Now that we created the correct networking configuration and the (PostgreSQL) Database has been created, it’s time to update the configuration of our App Engine application.
+
+A hello world application can be cloned here.
+
+To update the configuration of an App Engine Application, we need to change the app.yaml file. This file is located in the root of the project.
+
+The result could look as follows (don’t forget to replace the values for the VPC connector and the database):
+
+```yaml
+runtime: nodejs16
+
+vpc_access_connector:
+# Format: projects/YOUR_PROJECT_NAME/locations/YOUR_REGION/connectors/YOUR_VPC_CONNECTOR_NAME
+ name: # FILL_IN_YOUR_CONNECTOR_NAME
+ egress_setting: all-traffic
+
+env_variables:
+  PGHOST: # FILL_IN_YOUR_CLOUD_SQL_PRIVATE_IP
+  PGUSER: postgres
+  PGDATABASE: # FILL_IN_YOUR_DB_NAME
+  PGPASSWORD: # FILL_IN_YOUR_PASSWORD
+  PGPORT: 5432
+
+```
