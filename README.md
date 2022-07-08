@@ -85,3 +85,25 @@ gcloud services vpc-peerings connect \
 --network=private-cloud-sql
 ```
 Note: This step is specifically for connecting with Cloud SQL over private IP. It can be skipped if you are not connecting with CloudSQL.
+
+## Step 4: Create a Cloud SQL Instance
+Now that we created the necessary network infrastructure, we are ready to create a CloudSQL Database instance.
+
+Using this command, we create a new PostgreSQL database with private ip, in the VPC network we provisioned earlier. In this example, I’ve used ‘secretpassword’ as the root password. For production workloads, I’d recommend using Google Secret Manager or IAM authentication.
+
+```
+gcloud beta sql instances create private-postgres \
+--region=europe-west1 \
+--root-password=secretpassword \
+--database-version=POSTGRES_13 \
+--no-assign-ip \
+--network=private-cloud-sql \
+--cpu=2 \
+--memory=4GB \
+--async
+```
+This operation takes a few minutes. After that, a database can be created in the newly provisioned CloudSQL instance.
+
+```
+gcloud sql databases create test --instance private-postgres
+```
