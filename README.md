@@ -52,3 +52,36 @@ gcloud compute networks vpc-access connectors create connector-europe-west1 \
   --region=europe-west1 \
   --range=10.8.0.0/28
 ```
+
+Note: This command uses some defaults for the number of instances as well as the instance type. Since this could limit your network throughput between your VPC and the Serverless products, it’s recommended to override these properties.
+
+## Step 3: Setup Private Access Connection
+The CloudSQL instances are deployed in a VPC that Google Manages. To use Cloud SQL instances via private IP in your VPC, we need to setup a VPC peering connection with the ‘servicenetworking’ network.
+
+If this is the first time you interact with service networking, you have to enable the API via:
+
+```
+gcloud services enable servicenetworking.googleapis.com
+```
+
+To setup a VPC Peering connection, we first need to reserve an IP range that can be used. We can do this by executing the following command:
+
+```
+gcloud compute addresses create google-managed-services-private-cloud-sql \
+--global \
+--purpose=VPC_PEERING \
+--prefix-length=16 \
+--network=private-cloud-sql
+```
+
+This sets up an auto-generated IP address range based on a prefix, it’s also possible to specify the range yourself.
+
+Now that we have an IP range, we can use this to setup a VPC peering connecting with the ‘service networking’ project:
+
+```
+gcloud services vpc-peerings connect \
+--service=servicenetworking.googleapis.com \
+--ranges=google-managed-services-private-cloud-sql \
+--network=private-cloud-sql
+```
+Note: This step is specifically for connecting with Cloud SQL over private IP. It can be skipped if you are not connecting with CloudSQL.
