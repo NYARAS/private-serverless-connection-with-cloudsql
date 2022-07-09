@@ -33,3 +33,8 @@ resource "google_sql_user" "new_csql_user" {
   instance = var.cloud_sql_instance_name
   password = var.sql_user_password
 }
+
+resource "google_sql_database" "database" {
+	name = var.database_name
+	instance = var.instance_name
+}
