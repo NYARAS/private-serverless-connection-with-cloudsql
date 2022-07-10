@@ -19,7 +19,10 @@ resource "google_app_engine_flexible_app_version" "appengine_flexible_automatic_
     initial_delay     = var.liveness_initial_delay
   }
   service = var.service
-
+  
+  version_id       = var.service_version
+  inbound_services = var.inbound_services
+  instance_class   = var.instance_class
 
   runtime_main_executable_path = var.runtime_main_executable_path
 
