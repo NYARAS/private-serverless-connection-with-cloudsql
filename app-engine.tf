@@ -96,6 +96,9 @@ resource "google_app_engine_flexible_app_version" "appengine_flexible_automatic_
     }
   }
 
+env_variables       = var.env_variables
+  default_expiration  = var.default_expiration
+  nobuild_files_regex = var.nobuild_files_regex
   deployment {
     dynamic "zip" {
       for_each = var.zip[*]
@@ -103,6 +106,36 @@ resource "google_app_engine_flexible_app_version" "appengine_flexible_automatic_
         source_url  = zip.value.source_url
         files_count = zip.value.files_count
       }
+    }
+    dynamic "files" {
+      for_each = var.files == null ? [] : list(var.files)
+      content {
+        name       = var.files[files.key]["name"]
+        sha1_sum   = var.files[files.key]["sha1_sum"]
+        source_url = var.files[files.key]["source_url"]
+      }
+    }
+    dynamic "container" {
+      for_each = var.container == null ? [] : list(var.container)
+      content {
+        image = var.container[container.key]["image"]
+      }
+    }
+    dynamic "cloud_build_options" {
+      for_each = var.cloud_build_options == null ? [] : list(var.cloud_build_options)
+      content {
+        app_yaml_path       = var.cloud_build_options[cloud_build_options.key]["app_yaml_path"]
+        cloud_build_timeout = var.cloud_build_options[cloud_build_options.key]["cloud_build_timeout"]
+      }
+    }
+  }
+  dynamic "endpoints_api_service" {
+    for_each = var.endpoints_api_service == null ? [] : list(var.endpoints_api_service)
+    content {
+      name                   = var.endpoints_api_service[endpoints_api_service.key]["name"]
+      config_id              = var.endpoints_api_service[endpoints_api_service.key]["config_id"]
+      rollout_strategy       = var.endpoints_api_service[endpoints_api_service.key]["rollout_strategy"]
+      disable_trace_sampling = var.endpoints_api_service[endpoints_api_service.key]["disable_trace_sampling"]
     }
   }
   noop_on_destroy           = var.noop_on_destroy
