@@ -56,7 +56,45 @@ resource "google_app_engine_flexible_app_version" "appengine_flexible_automatic_
   serving_status      = var.serving_status
   runtime_api_version = var.api_version
 
+   dynamic "handlers" {
+    for_each = var.handlers == null ? [] : var.handlers
+    content {
+      url_regex                   = var.handlers[handlers.key]["url_regex"]
+      security_level              = var.handlers[handlers.key]["security_level"]
+      login                       = var.handlers[handlers.key]["login"]
+      auth_fail_action            = var.handlers[handlers.key]["auth_fail_action"]
+      redirect_http_response_code = var.handlers[handlers.key]["redirect_http_response_code"]
+      dynamic "script" {
+        for_each = handlers.value.script == null ? [] : list(handlers.value.script)
+        content {
+          script_path = script.value.script_path
+        }
+      }
+      dynamic "static_files" {
+        for_each = handlers.value.static_files == null ? [] : list(handlers.value.static_files)
+        content {
+          path                  = static_files.value.path
+          upload_path_regex     = static_files.value.upload_path_regex
+          http_headers          = static_files.value.http_headers
+          mime_type             = static_files.value.mime_type
+          expiration            = static_files.value.expiration
+          require_matching_file = static_files.value.require_matching_file
+          application_readable  = static_files.value.application_readable
+        }
+      }
+    }
+  }
   runtime_main_executable_path = var.runtime_main_executable_path
+  dynamic "api_config" {
+    for_each = var.api_config == null ? [] : list(var.api_config)
+    content {
+      auth_fail_action = var.api_config[api_config.key]["auth_fail_action"]
+      login            = var.api_config[api_config.key]["login"]
+      script           = var.api_config[api_config.key]["script"]
+      security_level   = var.api_config[api_config.key]["security_level"]
+      url              = var.api_config[api_config.key]["url"]
+    }
+  }
 
   deployment {
     dynamic "zip" {
