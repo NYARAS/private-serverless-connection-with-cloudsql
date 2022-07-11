@@ -24,6 +24,38 @@ resource "google_app_engine_flexible_app_version" "appengine_flexible_automatic_
   inbound_services = var.inbound_services
   instance_class   = var.instance_class
 
+  dynamic "network" {
+    for_each = var.network[*]
+    content {
+      forwarded_ports  = network.value.forwarded_ports
+      instance_tag     = network.value.instance_tag
+      name             = network.value.name
+      subnetwork       = network.value.subnetwork
+      session_affinity = network.value.session_affinity
+    }
+  }
+    dynamic "resources" {
+    for_each = var.resources[*]
+    content {
+      cpu       = resources.value.cpu
+      disk_gb   = resources.value.disk_gb
+      memory_gb = resources.value.memory_gb
+      dynamic "volumes" {
+        for_each = resources.value.volumes == null ? [] : list(resources.value.volumes)
+        content {
+          name        = volumes.value.name
+          volume_type = volumes.value.volume_type
+          size_gb     = volumes.value.size_gb
+        }
+      }
+    }
+  }
+
+  runtime_channel     = var.runtime_channel
+  beta_settings       = var.beta_settings
+  serving_status      = var.serving_status
+  runtime_api_version = var.api_version
+
   runtime_main_executable_path = var.runtime_main_executable_path
 
   deployment {
