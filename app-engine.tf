@@ -188,4 +188,11 @@ env_variables       = var.env_variables
   }
   noop_on_destroy           = var.noop_on_destroy
   delete_service_on_destroy = var.delete_service_on_destroy
+
+  dynamic "vpc_access_connector" {
+    for_each = var.vpc_access_connector[*]
+    content {
+      name = vpc_access_connector.value.name
+    }
+  }
 }
