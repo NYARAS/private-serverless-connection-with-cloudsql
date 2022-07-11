@@ -29,13 +29,3 @@ variable "prefix_length" {
   description = "The prefix length of the IP range. If not present, it means the address field is a single IP address. This field is not applicable if address_type=EXTERNAL."
   type        = string
 }
-
-variable "associated_vpc_network_id" {
-  description = "The URL of the network in which to reserve an INTERNAL IP range. The IP range must be in RFC1918 space. This field is not applicable if address_type=EXTERNAL."
-  type        = string
-}
-
-variable "allocated_ip_address_ranges" {
-	type = list(string)
-	description = "(Required) Name of the IP address range(s) to peer."
-}
