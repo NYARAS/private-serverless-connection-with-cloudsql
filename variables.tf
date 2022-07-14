@@ -15,81 +15,8 @@ variable "region" {
 }
 
 ## VPC variables
-variable "vpc_network_name" {
-  description = "Name of the VPC network"
-  type        = string
-}
 
-variable "vpc_description" {
-  description = "An optional description of the vpc resource"
-  type        = string
-  default     = "VPC network created using Terraform."
-}
-
-# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_network#auto_create_subnetworks
-variable "vpc_auto_create_subnetworks_enabled" {
-  description = "When set to `true`, it will create a subnetwork for each region automatically across the 10.128.0.0/9"
-  type        = bool
-  default     = false
-}
-
-# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_network#routing_mode
-variable "routing_mode" {
-  type        = string
-  description = "Possible values for this variable are GLOBAL or REGIONAL. It defaults to GLOBAL"
-  default     = "GLOBAL"
-}
-
-# If set to false, it can deny access to the internet for the instances attached to the network created
-# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_network#delete_default_routes_on_create
-variable "delete_default_routes_on_create_enabled" {
-  type        = bool
-  description = "If set to true, default routes (0.0.0.0/0) will be deleted immediately after the network creation. Defaults to false"
-  default     = false
-}
-
- ## Allocated IP range variables
-variable "name" {
-  description = "Name of the allocated IP range"
-  type        = string
-}
-
-variable "description" {
-  type        = string
-  description = "An optional description for the allocated IP address range created."
-  default     = "Allocated IP address range created using a Terraform module."
-}
-
-variable "address" {
-  type        = string
-  description = "The IP address or the beginning of the address range represented by the allocated IP address range. \n If not specified, GCP chooses a valid IP address for you."
-	default = null
-}
-
-variable "purpose" {
-  description = "This should only be set when using an INTERNAL address. Possible values when using INTERNAL addresses are VPC_PEERING"
-  type        = string
-}
-
-variable "address_type" {
-  description = "The type of the address to reserve. Possible values are EXTERNAL or INTERNAL"
-  type        = string
-}
-
-variable "prefix_length" {
-  description = "The prefix length of the IP range. If not present, it means the address field is a single IP address. This field is not applicable if address_type=EXTERNAL."
-  type        = string
-}
-
-variable "associated_vpc_network_id" {
-  description = "The URL of the network in which to reserve an INTERNAL IP range. The IP range must be in RFC1918 space. This field is not applicable if address_type=EXTERNAL."
-  type        = string
-}
-
-variable "allocated_ip_address_ranges" {
-	type = list(string)
-	description = "(Required) Name of the IP address range(s) to peer."
-}
+## Allocated IP range variables
 
 # ========================= VARIABLE DEFINITION =================== #
 # variable "project_id" {}
